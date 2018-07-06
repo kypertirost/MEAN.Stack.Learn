@@ -2,15 +2,12 @@ extends layout
 
 block content
   #banner.page-header
-    .rows
+    .row
       .col-md-6.col-sm-12
-        h1=title
-  .row 
+        h1= title
+  .row
     .col-md-6.col-sm-12
-      p
-        | Loc8r was created to help people find places to sit down and get a bit of work done.
-        | This is only for the purpose of learning MEAN stack. Right now I know how to related external files to the layout and let them appear on the website. The logic is quite simple: app.js require routes; routes require controllers(.js) where res.render() function compiles your template , inserts locals there, and creates html output out of those two things, which is in views for this application
-        | <br /><br />
-        | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed lorem ac nisi dignissim accumsan.
+      p !{(about).replace(/\n/g, '<br />')}
+        
         
         
