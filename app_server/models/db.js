@@ -1,6 +1,12 @@
 /* Define database connection. Use mongoose connection*/
 var mongoose = require('mongoose');
+var gracefulShutdown;
 var dbURI = 'mongodb://localhost/Loc8r';
+if (process.env.NODE_ENV === 'production') {
+  console.log('Is in production');
+  dbURI = process.env.MONGOLAB_URI;
+}
+
 mongoose.connect(dbURI);
 
 /* Listen Mongoose connection events and out put the statues*/
