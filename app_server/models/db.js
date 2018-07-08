@@ -1,6 +1,6 @@
 /* Define database connection. Use mongoose connection*/
 var mongoose = require('mongoose');
-var dbURI = 'mongodb://localhost/loc8r';
+var dbURI = 'mongodb://localhost/Loc8r';
 mongoose.connect(dbURI);
 
 /* Listen Mongoose connection events and out put the statues*/
