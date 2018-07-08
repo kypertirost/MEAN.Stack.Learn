@@ -28,6 +28,8 @@ module.exports.homelist = function(req, res){
     }]
   });
 };
+
+
 /* GET 'Location Info' Page */
 module.exports.locationInfo = function(req, res){
   res.render('location-info', {
