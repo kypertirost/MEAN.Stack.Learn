@@ -46,5 +46,5 @@ module.exports.locationsUpdateOne = function (req, res) {
 }
 
 module.exports.locationsDeleteOne = function (req, res) {
-  sendJSONresponse(res, 200, {"status" : "success"});
+  sendJSONresponse  (res, 200, {"status" : "success"});
 }
