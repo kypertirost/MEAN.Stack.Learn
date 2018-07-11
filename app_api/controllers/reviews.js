@@ -139,7 +139,7 @@ module.exports.reviewsReadOne = function(req, res) {
 
 module.exports.reviewsUpdateOne = function(req, res) {
   if (!req.params.locationid || !req.params.reviewid) {
-    sendJSONresponse(res, 404 {
+    sendJSONresponse(res, 404, {
       "message" : "Not found, locationid and reviewid are both required"
     });
     return;
@@ -162,7 +162,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
         if (location.reviews && location.reviews.length > 0) {
           thisReview = location.reviews.id(req.params.reviewid);
           if (!thisReview) {
-            sendJSONresponse(res, 404 {
+            sendJSONresponse(res, 404, {
               "message" : "reviewid not found"
             });
             return;
