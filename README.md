@@ -10,7 +10,7 @@ the author Simon.
   <br>Solution </br>
     <p> Check with package.json files. There are some crucial dependecies that need to be declared in order to
     run on heroku. The followings are my dependecies.
-    ```
+    <pre> <code>
     "dependencies": {
         "body-parser": "^1.18.3",
         "cookie-parser": "~1.4.3",
@@ -23,7 +23,7 @@ the author Simon.
         "serve-favicon": "~2.5.0",
         "uglify-js": "^3.4.3"
       },
-    ```
+    </code> </pre>
     </p>
 <h1> No <code><i> MONGOLAB_URI</i></code> output </h1>
   <p> This is not hard to fix actually, but I still struggle for an hour. </p>
