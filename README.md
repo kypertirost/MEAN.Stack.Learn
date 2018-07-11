@@ -25,3 +25,4 @@ the author Simon.
         "uglify-js": "^3.4.3"
       },
     </code>
+    </p>
