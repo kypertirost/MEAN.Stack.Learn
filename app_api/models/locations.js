@@ -47,7 +47,8 @@ var locationSchema = new mongoose.Schema({
     // Always store coordinates longitude, latitude order.
     coords: {
         type: [Number],
-        index: '2dsphere'
+        index: '2dsphere',
+        required: true
     },
     openingTimes: [openingTimeSchema],
     reviews: [reviewSchema]
