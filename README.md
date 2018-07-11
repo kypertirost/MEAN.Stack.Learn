@@ -25,7 +25,11 @@ the author Simon.
       },
     ```
     </p>
+<<<<<<< HEAD
 <h1> No <code> MONGOLAB_URI </code> output </h1>
+=======
+<h1> No <code> MONGOLAB_URI </code> output
+>>>>>>> 53d2f23e17a2ef9dc91b72b9f4847270f8570d01
   <p> This is not hard to fix actually, but I still struggle for an hour. </p>
   <p> <br> In terminal, set your <i>MONGOLAB_URI</i> by </br> <code> heroku config:set MONGOLAB_URI= &ltyour_data_base&gt </code></p>
 
@@ -33,4 +37,8 @@ the author Simon.
   <p> In chapter 6, <code>reviewsReadOne</code> cannot give me correct output. I search stackoverflow, and
   gives me a really good answer that the book has a type when inputting database.</p>
   <br>Solution</br>
+<<<<<<< HEAD
   <p/> Check your <code>locations</code> collection. In reviews, the "id" shoule be "_id"
+=======
+  <p> Check your <code>locations<code> collection. In reviews, the "id" shoule be "_id" <\p>
+>>>>>>> 53d2f23e17a2ef9dc91b72b9f4847270f8570d01
