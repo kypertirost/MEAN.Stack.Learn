@@ -31,6 +31,6 @@ the author Simon.
 
 <h1> Use <code>.id</code> Method Without Correct Result </h1>
   <p> In chapter 6, <code>reviewsReadOne</code> cannot give me correct output. I search stackoverflow, and
-  gives me a really good answer that the book has a type when inputting database.</p>
+  it gives me a really good answer: the book has a typo when inputting database.</p>
   <br>Solution</br>
   <p/> Check your <code>locations</code> collection. In reviews, the "id" shoule be "_id"
