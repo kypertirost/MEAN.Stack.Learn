@@ -226,7 +226,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
           }
         } else {
           sendJSONresponse (res, 404, {
-            "message" : "No review to delete";
+            "message" : "No review to delete"
           })
         }
       }

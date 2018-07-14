@@ -1,5 +1,14 @@
+var request = require('request');
+var apiOptions = {
+  server : "http://localhost:3000"
+};
+if (process.env.NODE_ENV === 'production') {
+  apiOptions.server = 'https://pristine-cuyahoga-valley-51913.herokuapp.com/'
+}
+
+
 /* GET 'home' page */
-module.exports.homelist = function(req, res){
+var renderHomepage = function (req, res) {
   res.render('locations-list', {
     title: 'Loc8r - find a place to work with wifi',
     pageHeader : {
@@ -27,6 +36,9 @@ module.exports.homelist = function(req, res){
       distance: '250m'
     }]
   });
+};
+module.exports.homelist = function(req, res){
+  renderHomepage(req,res);
 };
 
 
