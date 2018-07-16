@@ -1,21 +1,20 @@
-var mongoose = require ('mongoose');
+var mongoose = require('mongoose');
 
-// deine review schema
 var reviewSchema = new mongoose.Schema({
-    author: String,
+    author: {type: String, required: true},
     rating: {
         type: Number,
         required: true,
         min: 0,
         max: 5
     },
-    reviewText: String,
+    reviewText: {type: String, required: true},
     createdOn: {
         type: Date,
         "default": Date.now
     }
 });
-// define openingTime schema
+
 var openingTimeSchema = new mongoose.Schema({
     days: {
         type: String,
@@ -29,8 +28,6 @@ var openingTimeSchema = new mongoose.Schema({
     }
 });
 
-
-// combine the previous two into location Schema (define main schema)
 var locationSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -47,8 +44,7 @@ var locationSchema = new mongoose.Schema({
     // Always store coordinates longitude, latitude order.
     coords: {
         type: [Number],
-        index: '2dsphere',
-        required: true
+        index: '2dsphere'
     },
     openingTimes: [openingTimeSchema],
     reviews: [reviewSchema]

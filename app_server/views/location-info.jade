@@ -1,23 +1,23 @@
-include _includes/sharedHTMLfunctions
 extends layout
 
+include _includes/sharedHTMLfunctions
+
 block content
-  .row.page-header
-    .col-lg-12
-      h1= locations.name
+  .row.page-header: .col-lg-12
+      h1= pageHeader.title
   .row
     .col-xs-12.col-md-9
       .row
         .col-xs-12.col-sm-6
           p.rating
-            +outputRating(locations.rating)
-          p= locations.address
+            +outputRating(location.rating)
+          p= location.address
           .panel.panel-primary
             .panel-heading
               h2.panel-title Opening hours
             .panel-body
-              each time in locations.openingTimes
-                p 
+              each time in location.openingTimes
+                p
                   | #{time.days} : 
                   if time.closed
                     | closed
@@ -27,34 +27,36 @@ block content
             .panel-heading
               h2.panel-title Facilities
             .panel-body
-              each label in locations.facilities
+              each facility in location.facilities
                 span.label.label-warning
                   span.glyphicon.glyphicon-ok
-                  | &nbsp;#{label}
+                  | &nbsp;#{facility}
                 | &nbsp;
         .col-xs-12.col-sm-6.location-map
           .panel.panel-primary
             .panel-heading
               h2.panel-title Location map
             .panel-body
-              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=#{locations.coords.lat},#{locations.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{locations.coords.lat},#{locations.coords.lng}&scale=2&key=AIzaSyCZtc4-TUoS75ux0COBYBvJEy7s_MvOMEI')
+              img.img-responsive.img-rounded(src="http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lat},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lat},#{location.coords.lng}&scale=2&key=AIzaSyCZtc4-TUoS75ux0COBYBvJEy7s_MvOMEI")
       .row
         .col-xs-12
           .panel.panel-primary.review-panel
             .panel-heading
-              a.btn.btn-default.pull-right(href='/location/review/new') Add review
+              a.btn.btn-default.pull-right(href="/location/#{location._id}/review/new") 
+              | Add review
               h2.panel-title Customer reviews
             .panel-body.review-container
-              each review in locations.reviews
+              each review in location.reviews
                 .row
                   .review
                     .well.well-sm.review-header
                       span.rating
                         +outputRating(review.rating)
-                      span.reviewAuthor= review.author
-                      small.reviewTimestamp= review.timestamp
+                      span.reviewAuthor #{review.author}
+                      small.reviewTimestamp
+                        +formatDate(review.createdOn)
                     .col-xs-12
-                      p= review.reviewText
+                      p !{(review.reviewText).replace(/\n/g, '<br/>')}
     .col-xs-12.col-md-3
-      p.lead #{locations.name} #{sidebar.context}
-      p #{sidebar.callToAction}
+      p.lead #{location.name} #{sidebar.context}
+      p= sidebar.callToAction

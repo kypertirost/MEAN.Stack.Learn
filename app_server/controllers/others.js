@@ -1,9 +1,7 @@
-
-
-/* Get About Page*/
-module.exports.about = function(req, res){
-  res.render('generic-text', {
-    title: 'About',
-    about: "Loc8r was created to help people find places to sit down and get a bit of work done. \n\n This is only for the purpose of learning MEAN stack. Right now I know how to related external files to the layout and let them appear on the website. The logic is quite simple: app.js require routes; routes require controllers(.js) where res.render() function compiles your template, inserts locals there, and creates html output out of those two things."
-  });
+/* GET 'about us' page */
+module.exports.about = function(req, res) {
+    res.render('generic-text', {
+        title: 'About Loc8r',
+        content: 'Loc8r was created to help people find places to sit down and get a bit of work done.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed lorem ac nisi dignissim accumsan. Nullam sit amet interdum magna. Morbi quis faucibus nisi. Vestibulum mollis purus quis eros adipiscing tristique. Proin posuere semper tellus, id placerat augue dapibus ornare. Aenean leo metus, tempus in nisl eget, accumsan interdum dui. Pellentesque sollicitudin volutpat ullamcorper.\n\nSuspendisse tincidunt, lectus non suscipit pharetra, purus ipsum vehicula sapien, a volutpat mauris ligula vel dui. Proin varius interdum elit, eu porttitor quam consequat et. Quisque vitae felis sed ante fringilla fermentum in vitae sem. Quisque fermentum metus at neque sagittis imperdiet. Phasellus non laoreet massa, eu laoreet nibh. Pellentesque vel magna vulputate, porta augue vel, dapibus nisl. Phasellus aliquet nibh nec nunc posuere fringilla. Quisque sit amet dignissim erat. Nulla facilisi. Donec in sollicitudin ante. Cras rhoncus accumsan rutrum. Sed aliquet ligula dui, eget laoreet turpis tempor vitae.'
+    });
 };

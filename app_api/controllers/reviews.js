@@ -1,15 +1,62 @@
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
 
-var sendJSONresponse = function (res, status, content) {
+var sendJSONresponse = function(res, status, content) {
   res.status(status);
-  res.json(content)
-}
+  res.json(content);
+};
+
+/* POST a new review, providing a locationid */
+/* /api/locations/:locationid/reviews */
+module.exports.reviewsCreate = function(req, res) {
+  if (req.params.locationid) {
+    Loc
+      .findById(req.params.locationid)
+      .select('reviews')
+      .exec(
+        function(err, location) {
+          if (err) {
+            sendJSONresponse(res, 400, err);
+          } else {
+            doAddReview(req, res, location);
+          }
+        }
+    );
+  } else {
+    sendJSONresponse(res, 404, {
+      "message": "Not found, locationid required"
+    });
+  }
+};
+
+
+var doAddReview = function(req, res, location) {
+  if (!location) {
+    sendJSONresponse(res, 404, "locationid not found");
+  } else {
+    location.reviews.push({
+      author: req.body.author,
+      rating: req.body.rating,
+      reviewText: req.body.reviewText
+    });
+    location.save(function(err, location) {
+      var thisReview;
+      if (err) {
+        sendJSONresponse(res, 400, err);
+      } else {
+        updateAverageRating(location._id);
+        thisReview = location.reviews[location.reviews.length - 1];
+        sendJSONresponse(res, 201, thisReview);
+      }
+    });
+  }
+};
 
 var updateAverageRating = function(locationid) {
+  console.log("Update rating average for", locationid);
   Loc
     .findById(locationid)
-    .select('rating reviews')
+    .select('reviews')
     .exec(
       function(err, location) {
         if (!err) {
@@ -23,7 +70,7 @@ var doSetAverageRating = function(location) {
   if (location.reviews && location.reviews.length > 0) {
     reviewCount = location.reviews.length;
     ratingTotal = 0;
-    for (i = 0; i < reviewCount; i ++) {
+    for (i = 0; i < reviewCount; i++) {
       ratingTotal = ratingTotal + location.reviews[i].rating;
     }
     ratingAverage = parseInt(ratingTotal / reviewCount, 10);
@@ -35,60 +82,61 @@ var doSetAverageRating = function(location) {
         console.log("Average rating updated to", ratingAverage);
       }
     });
-
   }
-}
+};
 
-var doAddReview = function (req, res, location) {
-  if (!location) {
+module.exports.reviewsUpdateOne = function(req, res) {
+  if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
-      "message" : "locationid not found"
-    })
-  } else {
-      location.reviews.push ({
-        author: req.body.author,
-        rating: req.body.rating,
-        reviewText: req.body.reviewText
-      });
-      location.save(function(err, location) {
-        var thisReview;
-        if (err) {
-          sendJSONresponse(res, 400, err);
-        } else {
-          //updateAverageRating is self defined to calculate rating after POST
-          updateAverageRating(location._id);
-          thisReview = location.reviews[location.reviews.length-1];
-          sendJSONresponse(res, 201, thisReview);
-        }
-      })
-    }
-}
-
-module.exports.reviewsCreate = function(req, res) {
-  var locationid = req.params.locationid;
-  if (locationid) {
-    Loc
-      .findById(locationid)
-      .select('reviews')
-      .exec(
-        function(err, location) {
-          if (err) {
-            sendJSONresponse(res, 400, err);
-            return;
-          } else {
-            doAddReview(req, res, location);
-          }
-        }
-      );
-  } else {
-    sendJSONresponse(res, 404, {
-      "message" : "Not found, locationid required"
+      "message": "Not found, locationid and reviewid are both required"
     });
+    return;
   }
-}
+  Loc
+    .findById(req.params.locationid)
+    .select('reviews')
+    .exec(
+      function(err, location) {
+        var thisReview;
+        if (!location) {
+          sendJSONresponse(res, 404, {
+            "message": "locationid not found"
+          });
+          return;
+        } else if (err) {
+          sendJSONresponse(res, 400, err);
+          return;
+        }
+        if (location.reviews && location.reviews.length > 0) {
+          thisReview = location.reviews.id(req.params.reviewid);
+          if (!thisReview) {
+            sendJSONresponse(res, 404, {
+              "message": "reviewid not found"
+            });
+          } else {
+            thisReview.author = req.body.author;
+            thisReview.rating = req.body.rating;
+            thisReview.reviewText = req.body.reviewText;
+            location.save(function(err, location) {
+              if (err) {
+                sendJSONresponse(res, 404, err);
+              } else {
+                updateAverageRating(location._id);
+                sendJSONresponse(res, 200, thisReview);
+              }
+            });
+          }
+        } else {
+          sendJSONresponse(res, 404, {
+            "message": "No review to update"
+          });
+        }
+      }
+  );
+};
 
 module.exports.reviewsReadOne = function(req, res) {
-  console.log(req.params);
+  console.log("Getting single review");
   if (req.params && req.params.locationid && req.params.reviewid) {
     Loc
       .findById(req.params.locationid)
@@ -107,7 +155,6 @@ module.exports.reviewsReadOne = function(req, res) {
             return;
           }
           if (location.reviews && location.reviews.length > 0) {
-            console.log(location.reviews)
             review = location.reviews.id(req.params.reviewid);
             if (!review) {
               sendJSONresponse(res, 404, {
@@ -137,10 +184,11 @@ module.exports.reviewsReadOne = function(req, res) {
   }
 };
 
-module.exports.reviewsUpdateOne = function(req, res) {
+// app.delete('/api/locations/:locationid/reviews/:reviewid'
+module.exports.reviewsDeleteOne = function(req, res) {
   if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
-      "message" : "Not found, locationid and reviewid are both required"
+      "message": "Not found, locationid and reviewid are both required"
     });
     return;
   }
@@ -149,10 +197,9 @@ module.exports.reviewsUpdateOne = function(req, res) {
     .select('reviews')
     .exec(
       function(err, location) {
-        var thisReview;
         if (!location) {
           sendJSONresponse(res, 404, {
-            "message" : "locationid not found "
+            "message": "locationid not found"
           });
           return;
         } else if (err) {
@@ -160,61 +207,12 @@ module.exports.reviewsUpdateOne = function(req, res) {
           return;
         }
         if (location.reviews && location.reviews.length > 0) {
-          thisReview = location.reviews.id(req.params.reviewid);
-          if (!thisReview) {
-            sendJSONresponse(res, 404, {
-              "message" : "reviewid not found"
-            });
-            return;
-          } else {
-              thisReview.author = req.body.author;
-              thisReview.rating = req.body.rating;
-              thisReview.reviewText = req.body.reviewText;
-              location.save(function(err, location) {
-                if (err) {
-                  sendJSONresponse(res, 404, err);
-                } else {
-                  updateAverageRating(res, 200, thisReview);
-                }
-              });
-          }
-        } else {
-            sendJSONresponse (res, 404, {
-              "message" : "No review to update"
-            });
-        }
-      });
-};
-
-module.exports.reviewsDeleteOne = function(req, res) {
-  if (!req.params.locationid || !req.params.reviewid) {
-    sendJSONresponse(res, 404, {
-      "message" : "Not found, locationid and reviewid are both required"
-    });
-    return;
-  }
-  Loc
-    .findById(req.params.locationid)
-    .select('reviews')
-    .exec(
-      function (err, location) {
-        if (!location) {
-          sendJSONresponse(res, 404, {
-            "message" : "locationid not found"
-          });
-          return;
-        } else if (err){
-          sendJSONresponse(res, 400, err);
-          return;
-        }
-        if (location.reviews && location.reviews.length > 0) {
           if (!location.reviews.id(req.params.reviewid)) {
             sendJSONresponse(res, 404, {
-              "message" : "reviewid not found"
+              "message": "reviewid not found"
             });
-            return;
           } else {
-            location.reviews.id (req.params.reviewid).remove();
+            location.reviews.id(req.params.reviewid).remove();
             location.save(function(err) {
               if (err) {
                 sendJSONresponse(res, 404, err);
@@ -225,10 +223,10 @@ module.exports.reviewsDeleteOne = function(req, res) {
             });
           }
         } else {
-          sendJSONresponse (res, 404, {
-            "message" : "No review to delete"
-          })
+          sendJSONresponse(res, 404, {
+            "message": "No review to delete"
+          });
         }
       }
-    )
+  );
 };
